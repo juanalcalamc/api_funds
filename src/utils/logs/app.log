@@ -1,0 +1,6 @@
+2025-11-18 11:41:47,275 - api_funds - ERROR - Notifications sms canceled.
+2025-11-18 11:43:37,852 - api_funds - ERROR - Notifications ss canceled.
+2025-11-18 11:57:10,515 - api_funds - ERROR - Fund with ID 1 not found for cancellation.
+2025-11-18 12:01:43,066 - api_funds - ERROR - The notification with the None type could not be sent.
+2025-11-18 14:17:26,642 - api_funds - ERROR - Subscriptions with ID 0 not found for cancellation.
+2025-11-18 14:17:43,084 - api_funds - ERROR - Notifications sms canceled.

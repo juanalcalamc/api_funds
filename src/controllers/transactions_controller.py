@@ -10,13 +10,17 @@ router = APIRouter()
 
 
 @router.get("/transactions", response_model=List[TransactionsOut])
-def List_Transactions(db: Session = Depends(get_db)):
+def list_transactions(db: Session = Depends(get_db)):
     return db.query(transactions).all()
-       
+
 
 @router.delete("/transactions/{transactionsid}", status_code=204)
 def delete_fund(transactionsid: str, db: Session = Depends(get_db)):
-    Transactions = db.query(transactions).filter(transactions.transactions_id == transactionsid).first()
+    Transactions = (
+        db.query(transactions)
+        .filter(transactions.transactions_id == transactionsid)
+        .first()
+    )
     if not Transactions:
         logger.error(f"Transactions with ID {transactionsid} not found.")
         raise HTTPException(status_code=404, detail="Transaction not found")
@@ -24,4 +28,3 @@ def delete_fund(transactionsid: str, db: Session = Depends(get_db)):
     db.delete(Transactions)
     db.commit()
     return None
-    
