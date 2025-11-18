@@ -8,11 +8,9 @@ from utils.logging import logger
 
 router = APIRouter()
 
-
 @router.get("/transactions", response_model=List[TransactionsOut])
 def list_transactions(db: Session = Depends(get_db)):
     return db.query(transactions).all()
-
 
 @router.delete("/transactions/{transactionsid}", status_code=204)
 def delete_fund(transactionsid: str, db: Session = Depends(get_db)):
@@ -24,7 +22,6 @@ def delete_fund(transactionsid: str, db: Session = Depends(get_db)):
     if not Transactions:
         logger.error(f"Transactions with ID {transactionsid} not found.")
         raise HTTPException(status_code=404, detail="Transaction not found")
-
     db.delete(Transactions)
     db.commit()
     return None

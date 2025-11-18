@@ -11,10 +11,8 @@ class SubscriptionBase(BaseModel):
     start_date: datetime
     notification: Optional[str] = None
 
-
 class SubscriptionsCreate(SubscriptionBase):
     pass
-
 
 class SubscriptionUpdate(SubscriptionBase):
     client_id: Optional[int] = None
@@ -23,13 +21,11 @@ class SubscriptionUpdate(SubscriptionBase):
     start_date: Optional[datetime] = None
     notification: Optional[str] = None
 
-
 class SubscriptionOut(SubscriptionBase):
     id_subscriptions: int
 
     class Config:
         from_attributes = True
-
 
 # Modelous de caclacion
 class CancelBase(BaseModel):
@@ -40,10 +36,8 @@ class CancelBase(BaseModel):
     profit: float
     notification: Optional[str] = None
 
-
 class CancelCreate(CancelBase):
     pass
-
 
 class CancelUpdate(CancelBase):
     client_id: Optional[int] = None
@@ -52,13 +46,11 @@ class CancelUpdate(CancelBase):
     start_amount: Optional[float] = None
     profit: Optional[float] = None
 
-
 class CancelOut(CancelBase):
     cancelled_id: int
 
     class Config:
         from_attributes = True
-
 
 # Mdelos transacciones
 class TransactionBase(BaseModel):
@@ -71,10 +63,8 @@ class TransactionBase(BaseModel):
     type: str
     amount: int
 
-
 class TransactionCreate(TransactionBase):
     pass
-
 
 class TransactionsOut(TransactionBase):
     transactions_id: str
@@ -82,10 +72,7 @@ class TransactionsOut(TransactionBase):
     class Config:
         from_attributes = True
 
-
 # Modelos de los fondos
-
-
 class FundBase(BaseModel):
     name: str
     term: str
@@ -98,7 +85,6 @@ class FundBase(BaseModel):
 class FundCreate(FundBase):
     pass
 
-
 class FundUpdate(BaseModel):
     name: Optional[str] = None
     term: Optional[str] = None
@@ -106,7 +92,6 @@ class FundUpdate(BaseModel):
     type: Optional[str] = None
     active: Optional[int] = None
     annual_return: Optional[float] = None
-
 
 class FundOut(FundBase):
     fund_id: int

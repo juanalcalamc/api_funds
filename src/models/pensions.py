@@ -1,7 +1,6 @@
 from sqlalchemy import Column, Integer, String, Float, Date, ForeignKey
 from models.database import Base
 
-
 class funds(Base):
     __tablename__ = "funds"
     fund_id = Column(Integer, primary_key=True, index=True, autoincrement=True)
@@ -11,7 +10,6 @@ class funds(Base):
     type = Column(String, nullable=False)
     active = Column(Integer, nullable=False)
     annual_return = Column(Float, nullable=False)
-
 
 class client(Base):
     __tablename__ = "client"
@@ -27,7 +25,6 @@ class client(Base):
     gender = Column(String, nullable=False)
     status = Column(String, nullable=False)
 
-
 class subscriptions(Base):
     __tablename__ = "subscriptions"
     id_subscriptions = Column(
@@ -37,7 +34,6 @@ class subscriptions(Base):
     fund_id = Column(Integer, ForeignKey("funds.fund_id"), nullable=False)
     start_date = Column(Date, nullable=False)
     amount = Column(Integer, nullable=False)
-
 
 class cancellations(Base):
     __tablename__ = "cancellations"
@@ -51,10 +47,8 @@ class cancellations(Base):
     start_amount = Column(Float, nullable=False)
     profit = Column(Float, nullable=False)
 
-
 class transactions(Base):
     __tablename__ = "transactions"
-
     transactions_id = Column(String, primary_key=True, nullable=False)
     id_subscriptions = Column(
         Integer, ForeignKey("subscriptions.id_subscriptions"), nullable=False
@@ -67,7 +61,6 @@ class transactions(Base):
     date = Column(Date, nullable=False)
     type = Column(String, nullable=False)
     amount = Column(Integer, nullable=False)
-
 
 class notifications(Base):
     __tablename__ = "notifications"

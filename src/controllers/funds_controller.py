@@ -8,10 +8,9 @@ from utils.logging import logger
 
 router = APIRouter()
 
-
 @router.post("/", response_model=FundOut, status_code=201)
 def create_fund(payload: FundCreate, db: Session = Depends(get_db)):
-    """ "
+    """ 
     Crea un nuevo fondo en la base de datos.
     Args:
         payload (FundCreate): Datos necesarios para crear el fondo
@@ -19,22 +18,20 @@ def create_fund(payload: FundCreate, db: Session = Depends(get_db)):
         `Depends(get_db)`. Esta sesion se utiliza para ejecutar consultas y transacciones sobre la base de datos. No es necesario pasarla manualmente al llamar al endpoint, ya que FastAPI se encarga de resolver la dependencia.
     Returns:
         funds: El fondo creado con todos sus detalles.
-
     Raises:
         HTTPException: Si ocurre algun error durante la creacion del fondo."""
     fund = funds(
-        name=payload.name,
-        term=payload.term,
-        waiting_time=payload.waiting_time,
-        type=payload.type,
-        active=payload.active,
-        annual_return=payload.annual_return,
+        name = payload.name,
+        term = payload.term,
+        waiting_time = payload.waiting_time,
+        type = payload.type,
+        active = payload.active,
+        annual_return = payload.annual_return,
     )
     db.add(fund)
     db.commit()
     db.refresh(fund)
     return fund
-
 
 @router.get("/", response_model=List[FundOut])
 def list_funds(db: Session = Depends(get_db)):
@@ -48,7 +45,6 @@ def list_funds(db: Session = Depends(get_db)):
     """
     return db.query(funds).all()
 
-
 @router.get("/{fundid}", response_model=FundOut)
 def get_fund(fundid: int, db: Session = Depends(get_db)):
     """Obtiene los detalles de un fondo específico por su ID.
@@ -60,14 +56,12 @@ def get_fund(fundid: int, db: Session = Depends(get_db)):
         funds: Detalles del fondo solicitado.
     Raises:
         HTTPException: Si el fondo con el ID especificado no existe.
-
     """
     fund = db.query(funds).filter(funds.fund_id == fundid).first()
     if not fund:
         logger.error(f"Fund with ID {fundid} not found for cancellation.")
         raise HTTPException(status_code=404, detail="Fund not found")
     return fund
-
 
 @router.patch("/{fundid}", response_model=FundOut)
 def update_fund(fundid: int, payload: FundUpdate, db: Session = Depends(get_db)):
@@ -85,15 +79,12 @@ def update_fund(fundid: int, payload: FundUpdate, db: Session = Depends(get_db))
     if not fund:
         logger.error(f"Fund with ID {fundid} not found for cancellation.")
         raise HTTPException(status_code=404, detail="Fund not found")
-
     update_data = payload.model_dump(exclude_unset=True)
     for field, value in update_data.items():
         setattr(fund, field, value)
-
     db.commit()
     db.refresh(fund)
     return fund
-
 
 @router.delete("/{fundid}", status_code=204)
 def delete_fund(fundid: int, db: Session = Depends(get_db)):
@@ -101,7 +92,6 @@ def delete_fund(fundid: int, db: Session = Depends(get_db)):
     if not fund:
         logger.error(f"Fund with ID {fundid} not found for cancellation.")
         raise HTTPException(status_code=404, detail="Fund not found")
-
     db.delete(fund)
     db.commit()
     return None

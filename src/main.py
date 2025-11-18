@@ -1,9 +1,5 @@
 from fastapi import FastAPI
-from controllers import (
-    cancellations_controller,
-    subscriptions_controller,
-    funds_controller,
-    transactions_controller,
+from controllers import (cancellations_controller,subscriptions_controller,funds_controller,transactions_controller,
 )
 from models.database import engine
 from models.pensions import Base
@@ -14,7 +10,6 @@ app = FastAPI(
     version="1.0.0",
     description="API for managing pension fund subscriptions and transactions.",
 )
-
 app.include_router(
     subscriptions_controller.router, prefix="/funds", tags=["Subscriptions"]
 )
