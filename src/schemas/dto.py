@@ -4,75 +4,68 @@ from datetime import datetime
 
 #CModelos de Suscripciones
 class SubscriptionBase(BaseModel):
-    ClientId: int
-    FundId: int
-    Amount: float
-    StartDate: datetime
-    Notification: Optional[str] = None
-
+    client_id: int
+    fund_id: int
+    amount: float
+    start_date: datetime
+    notification: Optional[str] = None
 class SubscriptionsCreate(SubscriptionBase):
     pass
 
 class SubscriptionUpdate(SubscriptionBase):
-    ClientId: Optional[int] = None
-    FundId: Optional[int] = None
-    Amount: Optional[float] = None
-    StartDate: Optional[datetime] = None
-    Notification: Optional[str] = None
-
+    client_id: Optional[int] = None
+    fund_id: Optional[int] = None
+    amount: Optional[float] = None
+    start_date: Optional[datetime] = None
+    notification: Optional[str] = None
 class SubscriptionOut(SubscriptionBase):
-    IdSubscriptions : int
+    id_subscriptions : int
     class Config:
         from_attributes = True 
 
 
 #Modelous de caclacion
 class CancelBase(BaseModel):
-    ClientId: int
-    FundId: int
-    IdSubscriptions: int
-    StartAmount: float
-    Profit: float
-
+    client_id: int
+    fund_id: int
+    id_subscriptions: int
+    start_amount: float
+    profit: float
 
 class CancelCreate(CancelBase):
    pass
 
 class CancelUpdate(CancelBase):
-    ClientId: Optional[int] = None  
-    FundId: Optional[int] = None  
-    IdSubscriptions: Optional[int] = None  
-    StartAmount: Optional[float] = None  
-    Profit: Optional[float] = None 
+    client_id: Optional[int] = None  
+    fund_id: Optional[int] = None  
+    id_subscriptions: Optional[int] = None  
+    start_amount: Optional[float] = None  
+    profit: Optional[float] = None 
    
 
 class CancelOut(CancelBase):
-    CancelledId : int
+    cancelled_id : int
     class Config:
         from_attributes = True 
 
 #Mdelos transacciones
 class TransactionBase(BaseModel):
-    TransactionsId : str
-    IdSubscriptions : int
-    CancelledId : int
-    ClientId : int
-    FundId : int
-    Date : datetime
-    Type : str
-    Amount : int
+    transactions_id : str
+    id_subscriptions : int
+    cancelled_id : int
+    client_id : int
+    fund_id : int
+    date : datetime
+    type : str
+    amount : int
 
 class TransactionCreate(TransactionBase):
     pass
 
-# class TransactionsUpdate(TransactionBase):
-#     Type: Optional[str] = None  
-#     FundId: Optional[int] = None
-#     Date: Optional[datetime] = None
-#     Amount: Optional[float] = None
+
 
 class TransactionsOut(TransactionBase):
-    TransactionsId: str
+    transactions_id: str
 
     class Config:
         from_attributes = True 
@@ -81,26 +74,26 @@ class TransactionsOut(TransactionBase):
 #Modelos de los fondos 
 
 class FundBase(BaseModel):
-    Name: str
-    Term: str
-    WaitingTime: int
-    Type: str
-    Active: int
-    Annual_return: float
+    name: str
+    term: str
+    waiting_time: int
+    type: str
+    active: int
+    annual_return: float
 
 class FundCreate(FundBase):
     pass
 
 class FundUpdate(BaseModel):
-    Name: Optional[str] = None
-    Term: Optional[str] = None
-    WaitingTime: Optional[int] = None
-    Type: Optional[str] = None
-    Active: Optional[int] = None
-    Annual_return: Optional[float] = None
+    name: Optional[str] = None
+    term: Optional[str] = None
+    waiting_time: Optional[int] = None
+    type: Optional[str] = None
+    active: Optional[int] = None
+    annual_return: Optional[float] = None
 
 class FundOut(FundBase):
-    FundId: int
+    fund_id: int
 
     class Config:
         from_attributes = True 
