@@ -45,6 +45,7 @@ def created_subscribe(payload: SubscriptionsCreate, db: Session = Depends(get_db
         context = NotificationContext(strategies[payload.notification]())
         context.send_notification(message)
         return {
+            "logger": logger.info(f"Subscription created successfully with ID {sub.id_subscriptions}."),
             "message": "Subscription created and transaction recorded",
             "subscription": SubscriptionOut.model_validate(sub),
             "transaction": TransactionsOut.model_validate(trx),

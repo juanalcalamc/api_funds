@@ -4,3 +4,5 @@
 2025-11-18 12:01:43,066 - api_funds - ERROR - The notification with the None type could not be sent.
 2025-11-18 14:17:26,642 - api_funds - ERROR - Subscriptions with ID 0 not found for cancellation.
 2025-11-18 14:17:43,084 - api_funds - ERROR - Notifications sms canceled.
+2025-11-19 10:14:32,605 - api_funds - ERROR - Notifications st canceled.
+2025-11-19 10:17:09,194 - api_funds - INFO - Cancellation created for subscription ID 1 and transaction recorded.
