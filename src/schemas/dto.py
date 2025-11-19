@@ -2,7 +2,6 @@ from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
 
-
 # CModelos de Suscripciones
 class SubscriptionBase(BaseModel):
     client_id: int
@@ -81,7 +80,6 @@ class FundBase(BaseModel):
     active: int
     annual_return: float
 
-
 class FundCreate(FundBase):
     pass
 
@@ -98,3 +96,14 @@ class FundOut(FundBase):
 
     class Config:
         from_attributes = True
+
+#Notification 
+class NotificationBase(BaseModel):
+    client_id: int
+    cancelled_id: int
+    id_subscriptions: int
+    sent_date: datetime
+    origin: str
+
+class NotificationCreate(NotificationBase):
+    pass

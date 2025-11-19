@@ -1,13 +1,12 @@
-import uuid
-import datetime
 from typing import List
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends, HTTPException
-from models.pensions import subscriptions, transactions
-from schemas.dto import SubscriptionOut, SubscriptionsCreate
+from models.pensions import subscriptions
+from schemas.dto import SubscriptionOut, SubscriptionsCreate,TransactionsOut
 from models.database import get_db
 from utils.notifications import Email, SMS, NotificationContext
 from utils.logging import logger
+from services.subscriptions_service import create_subscription_transaction, delete_subscription
 
 router = APIRouter()
 
@@ -32,44 +31,27 @@ def created_subscribe(payload: SubscriptionsCreate, db: Session = Depends(get_db
             Si ocurre algún error durante la creación de la suscripción, por ejemplo
             si el fondo o cliente no existen.
     """
-    subscribe = subscriptions(
-        client_id=payload.client_id,
-        fund_id=payload.fund_id,
-        start_date=payload.start_date,
-        amount=payload.amount,
-    )
-    db.add(subscribe)
-    db.commit()
-    db.refresh(subscribe)
-    Transaction = transactions(
-        transactions_id = str(uuid.uuid4()),
-        id_subscriptions = subscribe.id_subscriptions,
-        cancelled_id = 0,
-        client_id = subscribe.client_id,
-        fund_id = subscribe.fund_id,
-        date = datetime.datetime.now(),
-        type = "subscription",
-        amount = payload.amount,
-    )
-    db.add(Transaction)
-    db.commit()
-    db.refresh(Transaction)
-    message = (
-        f"Subscription to fund {payload.fund_id} confirmed for amount {payload.amount}"
-    )
-    strategies = {"email": Email, "sms": SMS}
-    if payload.notification not in strategies:
-        logger.error(
-            f"The notification with the {payload.notification} type could not be sent."
+    try:
+        sub, trx, notify = create_subscription_transaction(db, payload)
+        message = (
+            f"Subscription to fund {payload.fund_id} confirmed for amount {payload.amount}"
         )
-        raise (HTTPException(status_code=404, detail="Notification method not found"))
-    context = NotificationContext(strategies[payload.notification]())
-    context.send_notification(message)
-    return {
-        "message": "Subscription created and transaction recorded",
-        "subscription": subscribe,
-        "transaction": Transaction,
-    }
+        strategies = {"email": Email, "sms": SMS}
+        if payload.notification not in strategies:
+            logger.error(
+                f"The notification with the {payload.notification} type could not be sent."
+            )
+            raise (HTTPException(status_code=404, detail="Notification method not found"))
+        context = NotificationContext(strategies[payload.notification]())
+        context.send_notification(message)
+        return {
+            "message": "Subscription created and transaction recorded",
+            "subscription": SubscriptionOut.model_validate(sub),
+            "transaction": TransactionsOut.model_validate(trx),
+            "notifications": notify
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/subscription", response_model=List[SubscriptionOut])
 def list_subscriptions(db: Session = Depends(get_db)):
@@ -87,7 +69,7 @@ def list_subscriptions(db: Session = Depends(get_db)):
     return db.query(subscriptions).all()
 
 @router.delete("/subscriptions/{subscriptionsid}", status_code=204)
-def delete_subscription(subscriptionsid: int, db: Session = Depends(get_db)):
+def delete_subs(subscriptionsid: int, db: Session = Depends(get_db)):
     """
     Elimina una suscripción específica de la base de datos según su ID.
     Args:
@@ -101,15 +83,10 @@ def delete_subscription(subscriptionsid: int, db: Session = Depends(get_db)):
             Si ocurre algún error durante la eliminacion de la suscripción, por ejemplo
             si la suscripcion no existen.
     """
-    subscription = (
-        db.query(subscriptions)
-        .filter(subscriptions.id_subscriptions == subscriptionsid)
-        .first()
-    )
-    if not subscription:
-        logger.error(f"Subscriptions with ID {subscriptionsid} not found.")
-        raise HTTPException(status_code=404, detail="Subscription not found")
+    try:
+        delete_sub = delete_subscription(db, subscriptionsid)
+        return {"deleted_subscription": delete_sub}
+    except Exception as e:
+        logger.exception(f"error deleting subscription {subscriptionsid}")
+        raise HTTPException(status_code=500, detail=str(e))
 
-    db.delete(subscription)
-    db.commit()
-    return None

@@ -1,12 +1,11 @@
-import datetime
-import uuid
 from sqlalchemy.orm import Session
 from models.database import get_db
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException
-from schemas.dto import CancelOut, CancelCreate
+from schemas.dto import CancelOut, CancelCreate, TransactionsOut
 from utils.notifications import Email, SMS, NotificationContext
-from models.pensions import funds, cancellations, transactions, subscriptions
+from models.pensions import  cancellations
+from services.cancellations_service import create_cancellation
 from utils.logging import logger
 
 router = APIRouter()
@@ -22,45 +21,10 @@ def created_canceled(payload: CancelCreate, db: Session = Depends(get_db)):
         dict: Un diccionario con un mensaje de confirmacion y los datos de la cancelacion creada.
         Raises:
             HTTPException: Si ocurre algun error durante la creacion de la cancelacion, por ejemplo si la suscripcion o fondo no existen."""
-    Subscriptions = (
-        db.query(subscriptions)
-        .filter(subscriptions.id_subscriptions == payload.id_subscriptions)
-        .first()
-    )
-    if not Subscriptions:
-        logger.error(
-            f"Subscriptions with ID {payload.id_subscriptions} not found for cancellation."
-        )
-        raise HTTPException(status_code=404, detail="Subscriptions not found")
-    fund = db.query(funds).filter(funds.fund_id == payload.fund_id).first()
-    if not fund:
-        logger.error(f"Fund with ID {payload.fund_id} not found for cancellation.")
-        raise HTTPException(status_code=404, detail="Fund not found")
-    canceled = cancellations(
-        client_id=payload.client_id,
-        fund_id=payload.fund_id,
-        id_subscriptions=payload.id_subscriptions,
-        date_cancelled=datetime.datetime.now(),
-        start_amount=Subscriptions.amount,
-        profit=fund.annual_return * Subscriptions.amount,
-    )
-    db.add(canceled)
-    db.commit()
-    db.refresh(canceled)
-    Transaction = transactions(
-        transactions_id = str(uuid.uuid4()),
-        id_subscriptions = 0,
-        cancelled_id = canceled.cancelled_id,
-        client_id = canceled.client_id,
-        fund_id = canceled.fund_id,
-        date = datetime.datetime.now(),
-        type = "cancellation",
-        amount = Subscriptions.amount,
-    )
-    db.add(Transaction)
-    db.commit()
-    db.refresh(Transaction)
+    canceled, trx, fund, notify = create_cancellation(db, payload)
+    
     message = f"Client {payload.client_id} Cancel to fund {payload.fund_id} your start amount was {canceled.start_amount} and you finish this process  with a profit of {fund.annual_return * canceled.start_amount}"
+    
     strategies = {"email": Email, "sms": SMS}
     if payload.notification not in strategies:
         logger.error(f"Notifications {payload.notification} canceled.")
@@ -68,9 +32,11 @@ def created_canceled(payload: CancelCreate, db: Session = Depends(get_db)):
     context = NotificationContext(strategies[payload.notification]())
     context.send_notification(message)
     return {
+        "logger": logger.info(f"Cancellation created for subscription ID {payload.id_subscriptions} and transaction recorded."),
         "message": "Cancellations successfully and transaction recorded",
         "cancellations": canceled,
-        "transaction": Transaction,
+        "transaction": TransactionsOut.model_validate(trx),
+        "notification": notify,
     }
 
 @router.get("/cancellations", response_model=List[CancelOut])

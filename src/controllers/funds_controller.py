@@ -1,10 +1,10 @@
 from sqlalchemy.orm import Session
 from models.database import get_db
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from models.pensions import funds
 from schemas.dto import FundCreate, FundUpdate, FundOut
-from utils.logging import logger
+from services.funds_service import create_funds, get_fund_by_id, update_funds, delete_funds
 
 router = APIRouter()
 
@@ -20,18 +20,11 @@ def create_fund(payload: FundCreate, db: Session = Depends(get_db)):
         funds: El fondo creado con todos sus detalles.
     Raises:
         HTTPException: Si ocurre algun error durante la creacion del fondo."""
-    fund = funds(
-        name = payload.name,
-        term = payload.term,
-        waiting_time = payload.waiting_time,
-        type = payload.type,
-        active = payload.active,
-        annual_return = payload.annual_return,
-    )
-    db.add(fund)
-    db.commit()
-    db.refresh(fund)
-    return fund
+    fund = create_funds(db, payload)
+    return{
+        "message": "Fund created successfully",
+        "fund": fund
+    }
 
 @router.get("/", response_model=List[FundOut])
 def list_funds(db: Session = Depends(get_db)):
@@ -57,12 +50,9 @@ def get_fund(fundid: int, db: Session = Depends(get_db)):
     Raises:
         HTTPException: Si el fondo con el ID especificado no existe.
     """
-    fund = db.query(funds).filter(funds.fund_id == fundid).first()
-    if not fund:
-        logger.error(f"Fund with ID {fundid} not found for cancellation.")
-        raise HTTPException(status_code=404, detail="Fund not found")
-    return fund
-
+    fund= get_fund_by_id(db, fundid)
+    return {"message": "Fund retrieved successfully", "fund": fund}
+    
 @router.patch("/{fundid}", response_model=FundOut)
 def update_fund(fundid: int, payload: FundUpdate, db: Session = Depends(get_db)):
     """Actualiza los detalles de un fondo específico por su ID.
@@ -75,23 +65,18 @@ def update_fund(fundid: int, payload: FundUpdate, db: Session = Depends(get_db))
         funds: El fondo actualizado con los nuevos detalles.
         Raises:
         HTTPException: Si el fondo con el ID especificado no existe."""
-    fund = db.query(funds).filter(funds.fund_id == fundid).first()
-    if not fund:
-        logger.error(f"Fund with ID {fundid} not found for cancellation.")
-        raise HTTPException(status_code=404, detail="Fund not found")
-    update_data = payload.model_dump(exclude_unset=True)
-    for field, value in update_data.items():
-        setattr(fund, field, value)
-    db.commit()
-    db.refresh(fund)
-    return fund
-
+    fund = update_funds(db, fundid, payload)
+    return {"message": "Fund updated successfully", "fund": fund}
 @router.delete("/{fundid}", status_code=204)
 def delete_fund(fundid: int, db: Session = Depends(get_db)):
-    fund = db.query(funds).filter(funds.fund_id == fundid).first()
-    if not fund:
-        logger.error(f"Fund with ID {fundid} not found for cancellation.")
-        raise HTTPException(status_code=404, detail="Fund not found")
-    db.delete(fund)
-    db.commit()
-    return None
+    """Elimina un fondo específico por su ID.
+    Args:
+        fund_id (int): ID del fondo a eliminar.
+        db (Session, optional): Sesion de base de datos inyectada automaticamente por FastAPI mediante
+        `Depends(get_db)`. Esta sesion se utiliza para ejecutar consultas y transacciones sobre la base de datos. No es necesario pasarla manualmente al llamar al endpoint, ya que FastAPI se encarga de resolver la dependencia.
+    Raises:
+        HTTPException: Si el fondo con el ID especificado no existe.
+    """
+    fund= delete_funds(db, fundid)
+    return {"message": "Fund deleted successfully", "fund": fund}
+    
