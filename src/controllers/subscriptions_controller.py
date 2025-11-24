@@ -1,12 +1,12 @@
 from typing import List
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends, HTTPException
-from models.pensions import subscriptions
-from schemas.dto import SubscriptionOut, SubscriptionsCreate,TransactionsOut
-from models.database import get_db
-from utils.notifications import Email, SMS, NotificationContext
-from utils.logging import logger
-from services.subscriptions_service import create_subscription_transaction, delete_subscription
+from src.models.pensions import subscriptions
+from src.schemas.dto import SubscriptionOut, SubscriptionsCreate,TransactionsOut
+from src.models.database import get_db
+from src.utils.notifications import Email, SMS, NotificationContext
+from src.utils.logging import logger
+from src.services.subscriptions_service import create_subscription_transaction, delete_subscription
 
 router = APIRouter()
 
@@ -44,10 +44,10 @@ def created_subscribe(payload: SubscriptionsCreate, db: Session = Depends(get_db
             raise (HTTPException(status_code=404, detail="Notification method not found"))
         context = NotificationContext(strategies[payload.notification]())
         context.send_notification(message)
+        logger.info(f"Subscription created successfully with ID {sub.id_subscriptions}.")
         return {
-            "logger": logger.info(f"Subscription created successfully with ID {sub.id_subscriptions}."),
             "message": "Subscription created and transaction recorded",
-            "subscription": SubscriptionOut.model_validate(sub),
+            "subscription": SubscriptionOut.model_validate(sub),            
             "transaction": TransactionsOut.model_validate(trx),
             "notifications": notify
         }

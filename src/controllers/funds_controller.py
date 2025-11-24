@@ -1,11 +1,11 @@
 from sqlalchemy.orm import Session
-from models.database import get_db
+from src.models.database import get_db
 from typing import List
 from fastapi import APIRouter, Depends
-from models.pensions import funds
-from schemas.dto import FundCreate, FundUpdate, FundOut
-from services.funds_service import create_funds, get_fund_by_id, update_funds, delete_funds
-from utils.logging import logger
+from src.models.pensions import funds
+from src.schemas.dto import FundCreate, FundUpdate, FundOut
+from src.services.funds_service import create_funds, get_fund_by_id, update_funds, delete_funds
+from src.utils.logging import logger
 
 router = APIRouter()
 
@@ -22,11 +22,9 @@ def create_fund(payload: FundCreate, db: Session = Depends(get_db)):
     Raises:
         HTTPException: Si ocurre algun error durante la creacion del fondo."""
     fund = create_funds(db, payload)
-    return{
-        "logger": logger.info(f"Fund created successfully with ID {fund.fund_id}."),
-        "message": "Fund created successfully",
-        "fund": fund
-    }
+    logger.info(f"Fund created successfully with ID {fund.fund_id}.")
+    return  fund
+
 
 @router.get("/", response_model=List[FundOut])
 def list_funds(db: Session = Depends(get_db)):
@@ -53,9 +51,9 @@ def get_fund(fundid: int, db: Session = Depends(get_db)):
         HTTPException: Si el fondo con el ID especificado no existe.
     """
     fund= get_fund_by_id(db, fundid)
-    return {"logger": logger.info(f"Fund retrieved successfully with ID {fund.fund_id}."),
-            "message": "Fund retrieved successfully",
-            "fund": fund}
+    logger.info(f"Fund retrieved successfully with ID {fund.fund_id}.")
+    return  fund
+
     
 @router.patch("/{fundid}", response_model=FundOut)
 def update_fund(fundid: int, payload: FundUpdate, db: Session = Depends(get_db)):
@@ -70,8 +68,9 @@ def update_fund(fundid: int, payload: FundUpdate, db: Session = Depends(get_db))
         Raises:
         HTTPException: Si el fondo con el ID especificado no existe."""
     fund = update_funds(db, fundid, payload)
-    return {"logger": logger.info(f"Fund updated successfully with ID {fund.fund_id}."),
-            "message": "Fund updated successfully", "fund": fund}
+    logger.info(f"Fund updated successfully with ID {fund.fund_id}.")
+    return  fund
+
 @router.delete("/{fundid}", status_code=204)
 def delete_fund(fundid: int, db: Session = Depends(get_db)):
     """Elimina un fondo específico por su ID.
@@ -83,6 +82,8 @@ def delete_fund(fundid: int, db: Session = Depends(get_db)):
         HTTPException: Si el fondo con el ID especificado no existe.
     """
     fund= delete_funds(db, fundid)
-    return {"logger": logger.info(f"Fund deleted successfully with ID {fund.fund_id}."),
-            "message": "Fund deleted successfully", "fund": fund}
+    logger.info(f"Fund deleted successfully with ID {fund.fund_id}.")
+    return {
+        "message": "Fund deleted successfully",
+        "fund": fund}
     

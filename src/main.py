@@ -1,8 +1,8 @@
 from fastapi import FastAPI
-from controllers import (cancellations_controller,subscriptions_controller,funds_controller,transactions_controller,
+from src.controllers import (cancellations_controller,subscriptions_controller,funds_controller,transactions_controller,
 )
-from models.database import engine
-from models.pensions import Base
+from src.models.database import engine
+from src.models.pensions import Base
 
 Base.metadata.create_all(bind=engine)
 app = FastAPI(

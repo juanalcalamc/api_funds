@@ -1,6 +1,6 @@
-from models.database import engine, Base
-from utils.logging import logger
-from models import pensions
+from src.models.database import engine, Base
+from src.utils.logging import logger
+from src.models import pensions
 
 Base.metadata.drop_all(bind=engine)
 Base.metadata.create_all(bind=engine)

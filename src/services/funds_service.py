@@ -1,8 +1,8 @@
-from http.client import HTTPException
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
-from models.pensions import funds
-from schemas.dto import FundCreate, FundUpdate, FundOut
-from utils.logging import logger
+from src.models.pensions import funds
+from src.schemas.dto import FundCreate, FundUpdate, FundOut
+from src.utils.logging import logger
 
 def create_funds(db: Session, payload: FundCreate):
     fund = funds(
@@ -16,7 +16,7 @@ def create_funds(db: Session, payload: FundCreate):
     db.add(fund)
     db.commit()
     db.refresh(fund)
-    return fund
+    return  fund
 
 def get_fund_by_id(db: Session, fundid: int):
 
@@ -36,7 +36,7 @@ def update_funds(db: Session, fundid: int, payload: FundUpdate):
         setattr(fund, field, value)
     db.commit()
     db.refresh(fund)
-    return fund
+    return  fund
 
 def delete_funds(db: Session, fundid: int):
     fund = db.query(funds).filter(funds.fund_id == fundid).first()
@@ -45,5 +45,5 @@ def delete_funds(db: Session, fundid: int):
         raise HTTPException(status_code=404, detail="Fund not found")
     db.delete(fund)
     db.commit()
-    return None
+    return fund
 

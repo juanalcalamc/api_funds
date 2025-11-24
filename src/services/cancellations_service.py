@@ -1,9 +1,9 @@
 from fastapi import HTTPException
 import datetime, uuid
 from sqlalchemy.orm import Session
-from models.pensions import subscriptions, funds, cancellations, transactions, notifications
-from schemas.dto import CancelCreate
-from utils.logging import logger
+from src.models.pensions import subscriptions, funds, cancellations, transactions, notifications
+from src.schemas.dto import CancelCreate
+from src.utils.logging import logger
 
 def create_cancellation(db: Session, payload: CancelCreate):
     sub = (
@@ -57,4 +57,7 @@ def create_cancellation(db: Session, payload: CancelCreate):
     db.commit()
     db.refresh(notify)
 
-    return canceled, trx, fund, notify
+    return {"cancellations": canceled,
+        "transaction": trx,
+        "fund": fund,
+        "notification": notify}

@@ -1,9 +1,9 @@
 import datetime, uuid
 from fastapi import  HTTPException
-from models.pensions import subscriptions, transactions, notifications
-from schemas.dto import SubscriptionsCreate
+from src.models.pensions import subscriptions, transactions, notifications
+from src.schemas.dto import SubscriptionsCreate
 from sqlalchemy.orm import Session
-from utils.logging import logger
+from src.utils.logging import logger
 
 def create_subscription_transaction(db: Session, payload: SubscriptionsCreate):
     sub  = subscriptions(

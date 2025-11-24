@@ -1,10 +1,10 @@
 from sqlalchemy.orm import Session
 from typing import List
-from models.database import get_db
+from src.models.database import get_db
 from fastapi import APIRouter, Depends, HTTPException
-from schemas.dto import TransactionsOut
-from models.pensions import transactions
-from utils.logging import logger
+from src.schemas.dto import TransactionsOut
+from src.models.pensions import transactions
+from src.utils.logging import logger
 
 router = APIRouter()
 

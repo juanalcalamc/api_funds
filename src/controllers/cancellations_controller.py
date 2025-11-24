@@ -1,12 +1,12 @@
 from sqlalchemy.orm import Session
-from models.database import get_db
+from src.models.database import get_db
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException
-from schemas.dto import CancelOut, CancelCreate, TransactionsOut
-from utils.notifications import Email, SMS, NotificationContext
-from models.pensions import  cancellations
-from services.cancellations_service import create_cancellation
-from utils.logging import logger
+from src.schemas.dto import CancelOut, CancelCreate, TransactionsOut
+from src.utils.notifications import Email, SMS, NotificationContext
+from src.models.pensions import  cancellations
+from src.services.cancellations_service import create_cancellation
+from src.utils.logging import logger
 
 router = APIRouter()
 
@@ -21,9 +21,13 @@ def created_canceled(payload: CancelCreate, db: Session = Depends(get_db)):
         dict: Un diccionario con un mensaje de confirmacion y los datos de la cancelacion creada.
         Raises:
             HTTPException: Si ocurre algun error durante la creacion de la cancelacion, por ejemplo si la suscripcion o fondo no existen."""
-    canceled, trx, fund, notify = create_cancellation(db, payload)
+    result= create_cancellation(db, payload)
+    canceled = result["cancellations"]
+    trx = result["transaction"]
+    fund = result["fund"]
+    notify = result["notification"]
     
-    message = f"Client {payload.client_id} Cancel to fund {payload.fund_id} your start amount was {canceled.start_amount} and you finish this process  with a profit of {fund.annual_return * canceled.start_amount}"
+    message =( f"Client {payload.client_id} Cancel to fund {payload.fund_id} your start amount was {canceled.start_amount} and you finish this process  with a profit of {fund.annual_return * canceled.start_amount}")
     
     strategies = {"email": Email, "sms": SMS}
     if payload.notification not in strategies:
@@ -31,8 +35,8 @@ def created_canceled(payload: CancelCreate, db: Session = Depends(get_db)):
         raise (HTTPException(status_code=404, detail="Notification method not found"))
     context = NotificationContext(strategies[payload.notification]())
     context.send_notification(message)
+    logger.info(f"Cancellation created for subscription ID {payload.id_subscriptions} and transaction recorded.")
     return {
-        "logger": logger.info(f"Cancellation created for subscription ID {payload.id_subscriptions} and transaction recorded."),
         "message": "Cancellations successfully and transaction recorded",
         "cancellations": canceled,
         "transaction": TransactionsOut.model_validate(trx),
