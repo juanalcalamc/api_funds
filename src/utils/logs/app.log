@@ -479,3 +479,59 @@
 2025-11-21 14:31:29,521 - api_funds - ERROR - Subscriptions with ID 2 not found for cancellation.
 2025-11-21 14:31:37,554 - api_funds - ERROR - Fund with ID 0 not found for cancellation.
 2025-11-21 14:31:43,154 - api_funds - INFO - Cancellation created for subscription ID 1 and transaction recorded.
+2025-11-24 14:16:24,175 - api_funds - INFO - Fund created successfully with ID 4.
+2025-11-24 14:16:24,285 - api_funds - INFO - Fund created successfully with ID 1.
+2025-11-24 14:16:24,293 - api_funds - INFO - Fund updated successfully with ID 1.
+2025-11-24 14:16:24,393 - api_funds - INFO - Fund created successfully with ID 1.
+2025-11-24 14:16:24,400 - api_funds - INFO - Fund deleted successfully with ID 1.
+2025-11-24 14:16:24,402 - api_funds - ERROR - Fund with ID 1 not found for cancellation.
+2025-11-24 14:16:24,524 - api_funds - INFO - Subscription created successfully with ID 1.
+2025-11-24 14:16:30,498 - api_funds - INFO - Fund created successfully with ID 2.
+2025-11-24 14:16:30,595 - api_funds - INFO - Fund created successfully with ID 1.
+2025-11-24 14:16:30,605 - api_funds - INFO - Fund updated successfully with ID 1.
+2025-11-24 14:16:30,695 - api_funds - INFO - Fund created successfully with ID 1.
+2025-11-24 14:16:30,701 - api_funds - INFO - Fund deleted successfully with ID 1.
+2025-11-24 14:16:30,702 - api_funds - ERROR - Fund with ID 1 not found for cancellation.
+2025-11-24 14:16:30,810 - api_funds - INFO - Subscription created successfully with ID 1.
+2025-11-24 14:48:13,306 - api_funds - INFO - Fund created successfully with ID 2.
+2025-11-24 14:48:13,403 - api_funds - INFO - Fund created successfully with ID 1.
+2025-11-24 14:48:13,411 - api_funds - INFO - Fund updated successfully with ID 1.
+2025-11-24 14:48:13,491 - api_funds - INFO - Fund created successfully with ID 1.
+2025-11-24 14:48:13,497 - api_funds - INFO - Fund deleted successfully with ID 1.
+2025-11-24 14:48:13,498 - api_funds - ERROR - Fund with ID 1 not found for cancellation.
+2025-11-24 14:48:13,606 - api_funds - INFO - Subscription created successfully with ID 1.
+2025-11-24 15:19:51,703 - api_funds - INFO - Subscription created successfully with ID 1.
+2025-11-24 15:24:58,907 - api_funds - ERROR - Fund with ID 1 not found for cancellation.
+2025-11-24 15:25:26,997 - api_funds - INFO - Fund created successfully with ID 1.
+2025-11-24 16:13:49,651 - api_funds - INFO - Fund created successfully with ID 2.
+2025-11-24 17:27:44,757 - api_funds - INFO - Subscription created successfully with ID 2.
+2025-11-24 17:30:53,764 - api_funds - INFO - Cancellation created for subscription ID 2 and transaction recorded.
+2025-11-24 17:34:21,946 - api_funds - INFO - Subscription created successfully with ID 3.
+2025-11-24 17:35:10,986 - api_funds - INFO - Cancellation created for subscription ID 3 and transaction recorded.
+2025-11-24 18:00:07,999 - api_funds - INFO - Fund created successfully with ID 4.
+2025-11-24 18:00:08,089 - api_funds - INFO - Fund created successfully with ID 1.
+2025-11-24 18:00:08,099 - api_funds - INFO - Fund updated successfully with ID 1.
+2025-11-24 18:00:08,189 - api_funds - INFO - Fund created successfully with ID 1.
+2025-11-24 18:00:08,308 - api_funds - INFO - Subscription created successfully with ID 1.
+2025-11-24 18:03:30,498 - api_funds - ERROR - Notifications None canceled.
+2025-11-24 18:03:30,680 - api_funds - INFO - Fund created successfully with ID 2.
+2025-11-24 18:03:30,768 - api_funds - INFO - Fund created successfully with ID 1.
+2025-11-24 18:03:30,776 - api_funds - INFO - Fund updated successfully with ID 1.
+2025-11-24 18:03:30,863 - api_funds - INFO - Fund created successfully with ID 1.
+2025-11-24 18:03:30,869 - api_funds - INFO - Fund deleted successfully with ID 1.
+2025-11-24 18:03:30,870 - api_funds - ERROR - Fund with ID 1 not found for cancellation.
+2025-11-24 18:03:30,975 - api_funds - INFO - Subscription created successfully with ID 1.
+2025-11-24 18:04:08,273 - api_funds - INFO - Cancellation created for subscription ID 1 and transaction recorded.
+2025-11-24 18:04:08,284 - api_funds - INFO - Fund created successfully with ID 2.
+2025-11-24 18:04:08,373 - api_funds - INFO - Fund created successfully with ID 1.
+2025-11-24 18:04:08,380 - api_funds - INFO - Fund updated successfully with ID 1.
+2025-11-24 18:04:08,465 - api_funds - INFO - Fund created successfully with ID 1.
+2025-11-24 18:04:08,472 - api_funds - INFO - Fund deleted successfully with ID 1.
+2025-11-24 18:04:08,472 - api_funds - ERROR - Fund with ID 1 not found for cancellation.
+2025-11-24 18:04:08,581 - api_funds - INFO - Subscription created successfully with ID 1.
+2025-11-25 11:45:14,261 - api_funds - INFO - Fund created successfully with ID 1.
+2025-11-25 11:53:12,552 - api_funds - INFO - Base de datos creada correctamente con las tablas de pensions.py
+2025-11-25 11:54:00,651 - api_funds - INFO - Fund created successfully with ID 1.
+2025-11-25 13:54:21,269 - api_funds - INFO - Fund created successfully with ID 2.
+2025-11-25 13:55:39,549 - api_funds - INFO - Fund created successfully with ID 3.
+2025-11-25 14:06:26,283 - api_funds - INFO - Fund created successfully with ID 4.

@@ -1,11 +1,11 @@
 from sqlalchemy.orm import Session
-from src.models.database import get_db
+from src.database.models.database import get_db
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException
-from src.schemas.dto import CancelOut, CancelCreate, TransactionsOut
+from src.database.schemas.dto import CancelOut, CancelCreate, TransactionsOut
 from src.utils.notifications import Email, SMS, NotificationContext
-from src.models.pensions import  cancellations
-from src.services.cancellations_service import create_cancellation
+from src.database.models.pensions import  Cancellations
+from src.services.cancellations_service import CancellationService
 from src.utils.logging import logger
 
 router = APIRouter()
@@ -21,7 +21,8 @@ def created_canceled(payload: CancelCreate, db: Session = Depends(get_db)):
         dict: Un diccionario con un mensaje de confirmacion y los datos de la cancelacion creada.
         Raises:
             HTTPException: Si ocurre algun error durante la creacion de la cancelacion, por ejemplo si la suscripcion o fondo no existen."""
-    result= create_cancellation(db, payload)
+    service = CancellationService(db)
+    result= service.create_cancellation(payload)
     canceled = result["cancellations"]
     trx = result["transaction"]
     fund = result["fund"]
@@ -52,4 +53,4 @@ def list_cancellations(db: Session = Depends(get_db)):
     Returns:
         list: Una lista de todas las cancelaciones almacenadas en la base de datos.
     """
-    return db.query(cancellations).all()
+    return db.query(Cancellations).all()

@@ -1,17 +1,17 @@
 from sqlalchemy import Column, Integer, String, Float, Date, ForeignKey
-from src.models.database import Base
+from src.database.models.database import Base
 
-class funds(Base):
+class Funds(Base):
     __tablename__ = "funds"
     fund_id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     name = Column(String, nullable=False)
     term = Column(String, nullable=False)
     waiting_time = Column(Integer, nullable=False)
     type = Column(String, nullable=False)
-    active = Column(Integer, nullable=False)
+    active = Column(String, nullable=False)
     annual_return = Column(Float, nullable=False)
 
-class client(Base):
+class Client(Base):
     __tablename__ = "client"
     client_id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
     first_name = Column(String, nullable=False)
@@ -25,7 +25,7 @@ class client(Base):
     gender = Column(String, nullable=False)
     status = Column(String, nullable=False)
 
-class subscriptions(Base):
+class Subscriptions(Base):
     __tablename__ = "subscriptions"
     id_subscriptions = Column(
         Integer, primary_key=True, autoincrement=True, nullable=False
@@ -35,7 +35,7 @@ class subscriptions(Base):
     start_date = Column(Date, nullable=False)
     amount = Column(Integer, nullable=False)
 
-class cancellations(Base):
+class Cancellations(Base):
     __tablename__ = "cancellations"
     cancelled_id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
     client_id = Column(Integer, ForeignKey("client.client_id"), nullable=False)
@@ -47,7 +47,7 @@ class cancellations(Base):
     start_amount = Column(Float, nullable=False)
     profit = Column(Float, nullable=False)
 
-class transactions(Base):
+class Transactions(Base):
     __tablename__ = "transactions"
     transactions_id = Column(String, primary_key=True, nullable=False)
     id_subscriptions = Column(
@@ -62,7 +62,7 @@ class transactions(Base):
     type = Column(String, nullable=False)
     amount = Column(Integer, nullable=False)
 
-class notifications(Base):
+class Notifications(Base):
     __tablename__ = "notifications"
     id_notifications = Column(
         Integer, primary_key=True, autoincrement=True, nullable=False

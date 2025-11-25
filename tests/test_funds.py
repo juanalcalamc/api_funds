@@ -1,9 +1,8 @@
 import pytest
 from fastapi import HTTPException
-from src.models.pensions import funds
 from src.controllers import funds_controller
-from src.models.database import Base, engine, SessionLocal
-from src.schemas.dto import FundUpdate,FundCreate,FundOut
+from src.database.models.database import Base, engine, SessionLocal
+from src.database.schemas.dto import FundUpdate,FundCreate
 
 @pytest.fixture
 def db_session():
@@ -65,6 +64,5 @@ def test_delete_fund(payload, db_session):
     response = funds_controller.delete_fund(fund_id, db_session)
     assert response["message"] == "Fund deleted successfully"
 
-    
     with pytest.raises(HTTPException):
         funds_controller.get_fund(fund_id, db_session)

@@ -1,27 +1,29 @@
 from sqlalchemy.orm import Session
 from typing import List
-from src.models.database import get_db
+from src.database.models.database import get_db
 from fastapi import APIRouter, Depends, HTTPException
-from src.schemas.dto import TransactionsOut
-from src.models.pensions import transactions
+from src.database.schemas.dto import TransactionsOut
+from src.database.models.pensions import Transactions
 from src.utils.logging import logger
 
 router = APIRouter()
 
 @router.get("/transactions", response_model=List[TransactionsOut])
 def list_transactions(db: Session = Depends(get_db)):
-    return db.query(transactions).all()
+    return db.query(Transactions).all()
 
 @router.delete("/transactions/{transactionsid}", status_code=204)
 def delete_fund(transactionsid: str, db: Session = Depends(get_db)):
-    Transactions = (
-        db.query(transactions)
-        .filter(transactions.transactions_id == transactionsid)
+    transactions = (
+        db.query(Transactions)
+        .filter(Transactions.transactions_id == transactionsid)
         .first()
     )
-    if not Transactions:
+    if not transactions:
         logger.error(f"Transactions with ID {transactionsid} not found.")
         raise HTTPException(status_code=404, detail="Transaction not found")
-    db.delete(Transactions)
+    db.delete(transactions)
     db.commit()
-    return None
+    return {"message": "Transaction deleted successfully", 
+            "transactions_id": transactionsid
+            }

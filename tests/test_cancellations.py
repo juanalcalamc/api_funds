@@ -1,13 +1,12 @@
 import pytest
 from datetime import date
-from src.models.database import Base, engine, SessionLocal
+from src.database.models.database import Base, engine, SessionLocal
 from src.controllers import  cancellations_controller
-from src.models.pensions import cancellations
-from src.schemas.dto import CancelCreate, CancelOut
+from src.database.models.pensions import  Subscriptions,Funds
+from src.database.schemas.dto import CancelCreate
 
 @pytest.fixture
 def db_session():
-    # Crear todas las tablas en la base de datos de pruebas
     Base.metadata.create_all(bind=engine)
 
     session = SessionLocal()
@@ -25,16 +24,17 @@ def payload():
             id_subscriptions = 1,
             start_amount = 0,
             profit = 0,
+            notification = "email"
             )
 def test_create_cancellation(payload, db_session):
-    from src.models.pensions import subscriptions, funds
-    sub = subscriptions(
+    
+    sub = Subscriptions(
         client_id=1,
         fund_id=1,
         amount=1000.0,
         start_date=date(2023, 1, 1),
     )
-    fund = funds(
+    fund = Funds(
         name="Test Fund",
         term="10 años",
         waiting_time=5,
@@ -45,8 +45,8 @@ def test_create_cancellation(payload, db_session):
     db_session.add(sub)
     db_session.add(fund)
     db_session.commit()
- 
-    response = cancellations_controller.create_cancellation(db_session, payload)
+
+    response = cancellations_controller.created_canceled(payload, db_session)
     canceled = response["cancellations"]
 
     assert canceled.client_id == sub.client_id

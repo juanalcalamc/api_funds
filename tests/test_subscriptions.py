@@ -1,12 +1,13 @@
 import pytest
 from datetime import date
-from src.models.pensions import  funds, subscriptions
+from src.database.models.pensions import  Funds
 from src.controllers import subscriptions_controller
-from src.models.database import Base, engine, SessionLocal
+from src.database.models.database import Base, engine, SessionLocal
+from src.database.schemas.dto import SubscriptionsCreate
 
 @pytest.fixture
 def db_session():
-    # Crear todas las tablas en la base de datos de pruebas
+    
     Base.metadata.create_all(bind=engine)
 
     session = SessionLocal()
@@ -14,11 +15,10 @@ def db_session():
         yield session
     finally:
         session.close()
-        # Opcional: limpiar las tablas después de cada test
         Base.metadata.drop_all(bind=engine)
 @pytest.fixture
 def payload():
-    from src.schemas.dto import SubscriptionsCreate
+    
     return SubscriptionsCreate(
         client_id = 1,
         fund_id = 1,
@@ -27,7 +27,7 @@ def payload():
         notification = "sms"
     )
 def test_create_subscription(db_session, payload):
-    fund = funds(
+    fund = Funds(
         fund_id=1,
         name="Test Fund",
         term="10 años",
@@ -46,4 +46,3 @@ def test_create_subscription(db_session, payload):
     assert sub.fund_id == fund.fund_id
     assert sub.amount == payload.amount
     assert sub.start_date == payload.start_date
- 

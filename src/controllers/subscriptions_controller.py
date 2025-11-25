@@ -1,12 +1,12 @@
 from typing import List
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends, HTTPException
-from src.models.pensions import subscriptions
-from src.schemas.dto import SubscriptionOut, SubscriptionsCreate,TransactionsOut
-from src.models.database import get_db
+from src.database.models.pensions import Subscriptions
+from src.database.schemas.dto import SubscriptionOut, SubscriptionsCreate,TransactionsOut
+from src.database.models.database import get_db
 from src.utils.notifications import Email, SMS, NotificationContext
 from src.utils.logging import logger
-from src.services.subscriptions_service import create_subscription_transaction, delete_subscription
+from src.services.subscriptions_service import SubscriptionService
 
 router = APIRouter()
 
@@ -32,7 +32,8 @@ def created_subscribe(payload: SubscriptionsCreate, db: Session = Depends(get_db
             si el fondo o cliente no existen.
     """
     try:
-        sub, trx, notify = create_subscription_transaction(db, payload)
+        service = SubscriptionService(db)
+        sub, trx, notify = service.create_subscription_transaction(payload)
         message = (
             f"Subscription to fund {payload.fund_id} confirmed for amount {payload.amount}"
         )
@@ -67,7 +68,7 @@ def list_subscriptions(db: Session = Depends(get_db)):
     Returns:
         list[SubscriptionOut]:
             retorna una lista de todas las suscripciones en la base de datos."""
-    return db.query(subscriptions).all()
+    return db.query(Subscriptions).all()
 
 @router.delete("/subscriptions/{subscriptionsid}", status_code=204)
 def delete_subs(subscriptionsid: int, db: Session = Depends(get_db)):
@@ -85,9 +86,9 @@ def delete_subs(subscriptionsid: int, db: Session = Depends(get_db)):
             si la suscripcion no existen.
     """
     try:
-        delete_sub = delete_subscription(db, subscriptionsid)
+        service = SubscriptionService(db)
+        delete_sub = service.delete_subscription(db, subscriptionsid)
         return {"deleted_subscription": delete_sub}
     except Exception as e:
         logger.exception(f"error deleting subscription {subscriptionsid}")
         raise HTTPException(status_code=500, detail=str(e))
-

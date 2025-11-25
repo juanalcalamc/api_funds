@@ -77,7 +77,7 @@ class FundBase(BaseModel):
     term: str
     waiting_time: int
     type: str
-    active: int
+    active: str
     annual_return: float
 
 class FundCreate(FundBase):
@@ -88,7 +88,7 @@ class FundUpdate(BaseModel):
     term: Optional[str] = None
     waiting_time: Optional[int] = None
     type: Optional[str] = None
-    active: Optional[int] = None
+    active: Optional[str] = None
     annual_return: Optional[float] = None
 
 class FundOut(FundBase):
