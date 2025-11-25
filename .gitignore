@@ -1,0 +1,17 @@
+venv/
+.venv/
+env/
+
+__pycache__/
+*.pyc
+
+.pensions-funds.db
+
+.ruff_cache/
+ruff_cache/
+
+.pytest_cache/
+pytest_cache/
+
+.__init__.py
+__init__.py
